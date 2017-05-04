@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+
+{% with messages=get_flashed_messages() %}
+    {% if messages %}
+    <p style="color: blue">{{messages[0]}}</p>
+    {% endif %}
+{% endwith %}
+
+
+<h1>Groceries Store</h1>
+{% if found==True %}
+
+    <ol>
+    {% for category in categories %}
+        <li>
+            <a href="{{url_for('categoryPage', category_name=category.name)}}">{{category.name}}</a>
+        </li>
+    {% endfor %}
+    </ol>
+
+{% endif %}
+
+{% if found==False %}
+
+    <h4>There are no items in the store.</h4>
+
+{% endif %}
+
+{% endblock %}

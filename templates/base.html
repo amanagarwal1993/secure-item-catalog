@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <meta name="google-signin-client_id" content="871555935984-dt90f5ar98lci6opelsihafmova3m4b5.apps.googleusercontent.com">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    </head>
+
+    <body>
+        {% if signin=='Login' %}
+        <a href="{{url_for('login')}}">{{signin}}</a>
+        {% elif signin=='Logout' %}
+        <a href="{{url_for('logout')}}" onclick="signOut();">{{signin}}</a>
+        {% endif %}
+        <br><br>
+        <a href="/">All Groceries</a>
+
+        <script>
+          function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+              console.log('User signed out.');
+            });
+          }
+            
+          function onLoad() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init();
+              });
+            }
+        </script>
+
+        <br>
+        
+        {% block main %}{% endblock %}
+
+    </body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block main %}
+<br>
+
+
+{% if category_found==False %}
+    <h4>The category "{{fault}}" you are looking for does not exist.</h4>
+{% endif %}
+
+
+{% if category_found==True %}
+
+    <a href='{{url_for("categoryPage", category_name=category.name)}}'>
+        <h4><-{{category.name.capitalize()}}</h4>
+    </a>
+    <h2>Add new item to {{category.name.capitalize()}}!</h2>
+
+    {% if errors %}
+        <ul>
+        {% for error in errors %}
+            <li style="color: red">{{error}}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form action="{{url_for('newItem', category_name=category.name)}}" method="post">
+        <label style="font-weight: bold">Item Name (30 chars max)</label><input name="item_name" type="text" placeholder="Kellog's Cornflakes" pattern=".{2,30}"><br><br>
+        
+        <label style="font-weight: bold">Price (max $500): $</label><input name="item_price" type="number" min="0" step="0.01" max="500"><br><br>
+        
+        <label style="font-weight: bold">Is the item available right now?</label>
+        <input type="radio" name="availability" value='Yes'>Available
+        <input type="radio" name="availability" value='No' checked>Not available
+        <br><br>
+        <label style="font-weight: bold">Enter item description (140 chars max)</label><br>
+        <textarea name="item_description" rows="3" cols="50" maxlength="140"></textarea>
+        <br><br>
+        <input name="category_confirm" type="hidden" value={{category.name}}>
+        
+        <input type="submit">
+    </form>
+
+{% endif %}
+
+
+{% endblock %}

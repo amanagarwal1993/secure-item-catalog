@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block main %}
+<br>
+    <h1>Are you sure?</h1>
+    <h3>You are trying to delete: {{item.name.capitalize()}}</h3>
+    <p>
+        ${{item.price}},    {% if item.available==1 %}Available{% endif %}{% if item.available==0 %}Not Available{% endif %}
+    </p>
+    <p><em>{{item.description}}</em></p>
+
+    <br>
+
+    <form action="{{url_for('deleteItem', category_name=category.name, item_id=item.id)}}" method="post">
+        <a href="{{url_for('itemsPage', category_name=category.name, item_id=item.id)}}"><button>I don't want to delete.</button></a>
+        <button style="color: red">Yes, delete this item.</button>
+
+    </form>
+
+
+{% endblock %}

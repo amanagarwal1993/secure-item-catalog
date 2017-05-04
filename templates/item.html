@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block main %}
+<br>
+
+{% if category_found==True %}
+    <a href='{{url_for("categoryPage", category_name=category.name)}}'>
+        <h4><-{{category.name}}</h4>
+    </a>
+{% endif %}
+
+
+{% if category_found==False %}
+    <h4>The category "{{fault}}" you are looking for does not exist.</h4>
+{% endif %}
+
+
+{% if category_found==True and item_found==False %}
+    <h4>The item you are looking for does not exist in this category. Please check url again.</h4>
+{% endif %}
+
+
+{% with messages=get_flashed_messages() %}
+    {% if messages %}
+    <p style="color: blue">{{messages[0]}}</p>
+    {% endif %}
+{% endwith %}
+
+
+{% if category_found==True and item_found==True %}
+    <h1>{{item.name}}</h1>
+    <p>
+        ${{item.price}},    {% if item.available==1 %}Available{% endif %}{% if item.available==0 %}Not Available{% endif %}
+    </p>
+    <p><em>{{item.description}}</em></p>
+
+    <a href="{{url_for('editItem', category_name=category.name, item_id=item.id)}}">Edit</a>
+    <a href="{{url_for('deleteItem', category_name=category.name, item_id=item.id)}}">Delete</a>
+
+{% endif %}
+
+
+{% endblock %}
