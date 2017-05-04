@@ -37,6 +37,13 @@ def main():
                            found=found, signin=signin)
 
 
+# Json endpoint for main page
+@app.route('/json')
+def mainjson():
+    categories = session.query(Category).all()
+    return jsonify(grocery_categories=[category.givejson for category in categories])
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     global previous_url
@@ -125,8 +132,31 @@ def categoryPage(category_name):
                            signin=signin)
 
 
+# Json endpoint for category page
+@app.route('/categories/<category_name>/json')
+def categoryjson(category_name):
+    category = session.query(Category).filter_by(
+        name=category_name.capitalize()).first()
+    if category is not None:
+        # category exists
+        try:
+            items = session.query(Item).filter_by(
+                category_id = category.id).all()
+            if len(items) > 0:
+                # Success
+                return jsonify(items=[item.givejson for item in items])
+            else:
+                return jsonify(items=[])
+        except:
+            # Fail: Items not found
+            return jsonify(items=[])
+    else:
+        # Category not found
+        return 'Category not found'
+
+
 # Page for each item of a category
-@app.route('/<category_name>/<int:item_id>/')
+@app.route('/categories/<category_name>/<int:item_id>/')
 def itemsPage(category_name, item_id):
     category = session.query(Category).filter_by(
         name=category_name.capitalize()).first()
@@ -162,6 +192,28 @@ def itemsPage(category_name, item_id):
         return categoryNotFound(category_name, 
                                 template='item.html', 
                                 signin=signin)
+
+
+# Json endpoint for item page
+@app.route('/categories/<category_name>/<int:item_id>/json')
+def itemjson(category_name, item_id):
+    category = session.query(Category).filter_by(
+        name=category_name.capitalize()).first()
+    if category is not None:
+        # category exists
+        try:
+            item = session.query(Item).filter_by(id=item_id).one()
+            if item.category_id == category.id:
+                # Success
+                return jsonify(item=item.givejson)
+            else:
+                return 'Error while finding item'
+        except:
+            # Fail: Item not found
+            return 'Error while finding item'
+    else:
+        # Category not found
+        return 'Category not found'
 
 
 @app.route('/<category_name>/<int:item_id>/edit/', 
@@ -354,6 +406,11 @@ def newItem(category_name):
                                fault=category_name, 
                                signin=signin)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return 'Error 404<br><br><br> \
+    Something went <em>terribly, terribly</em> wrong. \
+    Check url again. :)'
 
 # RUNNING THE APP
 app.debug = 1
