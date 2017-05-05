@@ -219,8 +219,7 @@ def itemjson(category_name, item_id):
 @app.route('/<category_name>/<int:item_id>/edit/', 
            methods=['GET', 'POST'])
 def editItem(category_name, item_id):
-    category = session.query(Category).filter_by(
-        name=category_name.capitalize()).first()
+    # Check for user authentication first
     if 'user_id' in login_session:
         signin = 'Logout'
     else:
@@ -228,7 +227,9 @@ def editItem(category_name, item_id):
         flash('You must be logged in to edit this item.')
         return redirect(url_for('itemsPage', 
                                 category_name=category_name, 
-                                item_id=item_id))  
+                                item_id=item_id))
+    category = session.query(Category).filter_by(
+        name=category_name.capitalize()).first()
     if category is not None:
         # Check beforehand if category and item exist, if not, return error immediately
         try:
@@ -298,9 +299,7 @@ def editItem(category_name, item_id):
 @app.route('/<category_name>/<int:item_id>/delete/', 
            methods=['GET', 'POST'])
 def deleteItem(category_name, item_id):
-    #return 'DELETE the item %s in %s' % (str(item_id), category_name)
-    category = session.query(Category).filter_by(
-        name=category_name.capitalize()).first()
+    # Check for user login
     if 'user_id' in login_session:
         signin = 'Logout'
     else:
@@ -309,6 +308,8 @@ def deleteItem(category_name, item_id):
         return redirect(url_for('itemsPage', 
                                 category_name=category_name, 
                                 item_id=item_id))
+    category = session.query(Category).filter_by(
+        name=category_name.capitalize()).first()
     if category is not None:
         try:
             item = session.query(Item).filter_by(id=item_id).one()
@@ -353,8 +354,7 @@ def deleteItem(category_name, item_id):
 
 @app.route('/<category_name>/new/', methods=['GET', 'POST'])
 def newItem(category_name):
-    category = session.query(Category).filter_by(
-        name=category_name.capitalize()).first()
+    # Check for authentication
     if 'user_id' in login_session:
         signin = 'Logout'
     else:
@@ -362,6 +362,8 @@ def newItem(category_name):
         flash('You must be logged in to create a new item.')
         return redirect(url_for('categoryPage', 
                                 category_name=category.name))
+    category = session.query(Category).filter_by(
+        name=category_name.capitalize()).first()
     if category is not None:
         if request.method == 'GET':
             return render_template('add_item.html', 

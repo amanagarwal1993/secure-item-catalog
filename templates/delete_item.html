@@ -9,11 +9,9 @@
     <p><em>{{item.description}}</em></p>
 
     <br>
-
+    <a href="{{url_for('itemsPage', category_name=category.name, item_id=item.id)}}"><button>I don't want to delete.</button></a><br><br>
     <form action="{{url_for('deleteItem', category_name=category.name, item_id=item.id)}}" method="post">
-        <a href="{{url_for('itemsPage', category_name=category.name, item_id=item.id)}}"><button>I don't want to delete.</button></a>
         <button style="color: red">Yes, delete this item.</button>
-
     </form>
 
 
